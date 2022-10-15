@@ -3,6 +3,7 @@ from pygame.locals import *
 from config import *
 import screens.splash as splash
 import screens.home as home
+import screens.game as game
 
 
 class Director:
@@ -23,9 +24,10 @@ class Director:
             "pwd": home.pwd,
             "otp": home.otp,
             "menu": home.menu,
+            "play": game.play,
         }
         self.current = None
-        self.take_input = False
+        self.to_blit = True
 
     def make_event(self, name):
         if name not in self.events:
@@ -92,8 +94,7 @@ class Director:
                     self.events, self.evt_count
                 )
                 self.current.evts_added = True
-            if self.take_input:
-                self.current.change_text()
             self.current.update()
 
-        self.window.blit(self.current.screen, (0, 0))
+        if self.to_blit:
+            self.window.blit(self.current.screen, (0, 0))

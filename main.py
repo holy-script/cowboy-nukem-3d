@@ -5,6 +5,8 @@ from core.director import Director
 from config import *
 from server import *
 import json
+from core.map import *
+from core.player import *
 
 
 class Game:
@@ -18,14 +20,19 @@ class Game:
         self.message = ''
         self.pinged = False
         self.flow = ''
+        self.delta_time = 1
+        self.started = False
 
     def new_game(self):
-        pass
+        self.map = Map(self)
+        self.player = Player(self)
 
     def update(self):
         pg.display.flip()
-        self.clock.tick(FPS)
+        self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"{self.clock.get_fps() :.1f}")
+        if self.started:
+            self.player.update()
 
     def draw(self):
         self.screen.fill("black")
@@ -39,6 +46,9 @@ class Game:
                 text[0], text[0].get_rect(center=text[1]))
             for text in self.director.current.texts
         ]
+        if self.started:
+            self.map.draw()
+            self.player.draw()
 
     def check_events(self):
         for event in pg.event.get():
@@ -82,9 +92,14 @@ class Game:
                         self.director.end_screen()
                         pg.time.set_timer(
                             self.director.events["FADE_IN_NO"], 1500, 1)
-                    if event.type == self.director.events["FADE_IN_YES"] or event.type == self.director.events["FADE_IN_NO"]:
+                    if event.type == self.director.events["FADE_IN_YES"]:
                         self.director.start_screen(
                             'email', {
+                                'message': self.message,
+                            })
+                    if event.type == self.director.events["FADE_IN_NO"]:
+                        self.director.start_screen(
+                            'menu', {
                                 'message': self.message,
                             })
                 if self.director.current.name == 'Email' and self.director.current.evts_added:
@@ -210,6 +225,18 @@ class Game:
                                     self.director.start_screen('email', {
                                         'message': self.message,
                                     })
+                if self.director.current.name == 'Menu' and self.director.current.evts_added:
+                    if event.type == self.director.events["START!_CLICK"]:
+                        self.director.end_screen()
+                        pg.time.set_timer(
+                            self.director.events["FADE_IN_START!"], 1500, 1)
+                    if event.type == self.director.events["FADE_IN_START!"]:
+                        self.director.start_screen('play')
+                if self.director.current.name == 'Play':
+                    if not self.started:
+                        self.director.to_blit = False
+                        self.new_game()
+                        self.started = True
 
     def run(self):
         while True:
