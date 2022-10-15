@@ -1,4 +1,21 @@
 {
     "projectId": "6349a6246bff99b4f66d",
-    "projectName": "Cowboy Nukem 3D"
+    "projectName": "Cowboy Nukem 3D",
+    "functions": [
+        {
+            "$id": "634a5f1de438f3bf594b",
+            "name": "ping",
+            "runtime": "node-16.0",
+            "path": "functions/ping",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        }
+    ]
 }
