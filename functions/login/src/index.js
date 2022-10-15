@@ -1,18 +1,5 @@
 const sdk = require("node-appwrite")
 
-/*
-  'req' variable has:
-    'headers' - object with request headers
-    'payload' - request body data as a string
-    'variables' - object with function variables
-
-  'res' variable has:
-    'send(text, status)' - function to return text response. Status code defaults to 200
-    'json(obj, status)' - function to return JSON response. Status code defaults to 200
-
-  If an error is thrown, a response with code 500 will be returned.
-*/
-
 module.exports = async function (req, res) {
   const client = new sdk.Client()
 
@@ -26,7 +13,31 @@ module.exports = async function (req, res) {
 
   const payload = JSON.parse(req.payload)
 
-  res.json({
-    areDevelopersAwesome: true,
-  })
+  const search = await database.listDocuments(
+    req.variables["DATABASE_ID"],
+    req.variables["COLLECTION_ID"],
+    [sdk.Query.equal("email", payload["email"])]
+  )
+
+  if (search.documents.length == 0) {
+    res.json({
+      signin: false,
+      msg: "Email does not exist, please sign up, verify email, then try logging in again!",
+    })
+  } else {
+    if (!search.documents[0].verified)
+      res.json({
+        signin: false,
+        msg: "Email not verified, play use the OTP sent to confirm it and then log in!",
+      })
+    search.documents[0].pwd == payload["pwd"]
+      ? res.json({
+          signin: true,
+          msg: "Welcome, have fun playing in online mode!",
+        })
+      : res.json({
+          signin: false,
+          msg: "Password incorrect, please try logging in again!",
+        })
+  }
 }

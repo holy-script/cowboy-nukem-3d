@@ -24,5 +24,5 @@ module.exports = async function (req, res) {
     JSON.stringify(payload.data)
   )
 
-  res.json(result.response)
+  res.json({ ...JSON.parse(result.response) })
 }

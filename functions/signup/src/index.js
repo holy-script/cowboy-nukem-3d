@@ -23,7 +23,7 @@ module.exports = async function (req, res) {
   if (search.documents.length > 0) {
     res.json({
       create: false,
-      msg: result.documents[0].verified
+      msg: search.documents[0].verified
         ? "Already signed up with this email, please log in!"
         : "Already signed up with this email, please verify it then log in!",
     })
@@ -38,6 +38,8 @@ module.exports = async function (req, res) {
         {
           email: payload["email"],
           otp: rand,
+          pwd: payload["pwd"],
+          verified: false,
         }
       )
 
