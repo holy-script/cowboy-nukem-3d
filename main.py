@@ -4,6 +4,7 @@ from pygame.locals import *
 from core.director import Director
 from config import *
 from server import *
+import json
 
 
 class Game:
@@ -57,38 +58,44 @@ class Game:
             if event.type == self.director.events["FADE_IN_CONNECT"]:
                 self.director.start_screen("connect")
             if self.director.current:
-                if self.director.current.evts_added:
-                    if self.director.current.name == "Connect":
-                        if not self.pinged:
-                            print("sending...")
-                            try:
-                                res = ping()
-                                if res['response'] == 'OK':
-                                    self.connected = True
-                            except:
-                                self.message = 'Cannot connect to server at the moment...'
-                            finally:
-                                self.pinged = True
-                        if event.type == self.director.events["YES_CLICK"]:
-                            self.director.end_screen()
-                            if self.connected:
-                                self.message = 'You are online - do subscribe to the leaderboard for live updates!'
-                            pg.time.set_timer(
-                                self.director.events["FADE_IN_YES"], 1500, 1)
-                        if event.type == self.director.events["NO_CLICK"]:
-                            if self.connected:
-                                self.message = 'Have fun playing offline, but feel free to switch!'
-                                self.connected = False
-                            self.director.end_screen()
-                            pg.time.set_timer(
-                                self.director.events["FADE_IN_NO"], 1500, 1)
-                        if event.type == self.director.events["FADE_IN_YES"] or event.type == self.director.events["FADE_IN_NO"]:
-                            self.director.start_screen(
-                                'auth', {
-                                    'message': self.message,
-                                    'input': 'email',
-                                })
-                    if self.director.current.name == 'Auth':
+                if self.director.current.name == "Connect" and self.director.current.evts_added:
+                    if not self.pinged:
+                        print("sending...")
+                        try:
+                            res = ping()
+                            if res['response'] == 'OK':
+                                self.connected = True
+                        except:
+                            self.message = 'Cannot connect to server at the moment...'
+                        finally:
+                            self.pinged = True
+                    if event.type == self.director.events["YES_CLICK"]:
+                        self.director.end_screen()
+                        if self.connected:
+                            self.message = 'You are online - do subscribe to the leaderboard for live updates!'
+                        pg.time.set_timer(
+                            self.director.events["FADE_IN_YES"], 1500, 1)
+                    if event.type == self.director.events["NO_CLICK"]:
+                        if self.connected:
+                            self.message = 'Have fun playing offline, but feel free to switch!'
+                            self.connected = False
+                        self.director.end_screen()
+                        pg.time.set_timer(
+                            self.director.events["FADE_IN_NO"], 1500, 1)
+                    if event.type == self.director.events["FADE_IN_YES"] or event.type == self.director.events["FADE_IN_NO"]:
+                        self.director.start_screen(
+                            'email', {
+                                'message': self.message,
+                            })
+                if self.director.current.name == 'Email' and self.director.current.evts_added:
+                    self.director.current.taking_input = True
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_BACKSPACE:
+                            self.director.current.input = self.director.current.input[:-1]
+                        else:
+                            self.director.current.input += event.unicode
+                        inputs['email'] = self.director.current.input
+                    if len(inputs['email']) > 0:
                         if event.type == self.director.events["SIGNUP_CLICK"]:
                             self.director.end_screen()
                             pg.time.set_timer(
@@ -102,18 +109,73 @@ class Game:
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_VERIFY"], 1500, 1)
                         if event.type == self.director.events["FADE_IN_LOGIN"]:
-                            pass
+                            self.director.start_screen('pwd', {
+                                'message': self.message,
+                            })
                         if event.type == self.director.events["FADE_IN_SIGNUP"]:
-                            pass
+                            self.director.start_screen('otp', {
+                                'message': self.message,
+                            })
                         if event.type == self.director.events["FADE_IN_VERIFY"]:
-                            pass
-                        self.director.current.taking_input = True
-                        if event.type == pg.KEYDOWN:
-                            if event.key == pg.K_BACKSPACE:
-                                self.director.current.input = self.director.current.input[:-1]
-                            else:
-                                self.director.current.input += event.unicode
-                            inputs['email'] = self.director.current.input
+                            self.director.start_screen('otp', {
+                                'message': self.message,
+                            })
+                if self.director.current.name == 'Pwd' and self.director.current.evts_added:
+                    self.director.current.taking_input = True
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_BACKSPACE:
+                            self.director.current.input = self.director.current.input[:-1]
+                        else:
+                            self.director.current.input += event.unicode
+                        inputs['pwd'] = self.director.current.input
+                    if len(inputs['pwd']) > 0:
+                        if event.type == self.director.events["SUBMIT_CLICK"]:
+                            self.director.end_screen()
+                            pg.time.set_timer(
+                                self.director.events["FADE_IN_SUBMIT"], 1500, 1)
+                        if event.type == self.director.events["FADE_IN_SUBMIT"]:
+                            print(inputs['email'],
+                                  inputs['pwd'], inputs['otp'])
+                            try:
+                                res = login()
+                                res = res['response']
+                                res = json.loads(res)
+                                self.message = res['message']
+                                self.director.start_screen('menu', {
+                                    'message': self.message,
+                                })
+                            except:
+                                self.message = 'An error occurred while logging in, try again'
+                                self.director.start_screen('email', {
+                                    'message': self.message,
+                                })
+                if self.director.current.name == 'Otp' and self.director.current.evts_added:
+                    self.director.current.taking_input = True
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_BACKSPACE:
+                            self.director.current.input = self.director.current.input[:-1]
+                        else:
+                            self.director.current.input += event.unicode
+                        inputs['otp'] = self.director.current.input
+                    if len(inputs['otp']) > 0:
+                        if event.type == self.director.events["CHECK_CLICK"]:
+                            self.director.end_screen()
+                            pg.time.set_timer(
+                                self.director.events["FADE_IN_CHECK"], 1500, 1)
+                        if event.type == self.director.events["FADE_IN_CHECK"]:
+                            try:
+                                res = otp()
+                                res = res['response']
+                                res = json.loads(res)
+                                self.message = res['message']
+                                self.director.start_screen('pwd', {
+                                    'message': self.message,
+                                })
+                            except:
+                                self.message = 'An error occurred while verifying, try again'
+                                self.director.start_screen('email', {
+                                    'message': self.message,
+                                })
 
     def run(self):
         while True:

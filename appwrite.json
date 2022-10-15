@@ -16,6 +16,66 @@
             "events": [],
             "schedule": "",
             "timeout": 15
+        },
+        {
+            "$id": "634a957385c2d6caa8d8",
+            "name": "signup",
+            "runtime": "node-16.0",
+            "path": "functions/signup",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "634a95c8e2e3211aef79",
+            "name": "auth",
+            "runtime": "node-16.0",
+            "path": "functions/auth",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "634a97524981a71c81fe",
+            "name": "login",
+            "runtime": "node-16.0",
+            "path": "functions/login",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
+        },
+        {
+            "$id": "634a975fe357e9e65b16",
+            "name": "verify",
+            "runtime": "node-16.0",
+            "path": "functions/verify",
+            "entrypoint": "src/index.js",
+            "ignore": [
+                "node_modules",
+                ".npm"
+            ],
+            "execute": [],
+            "events": [],
+            "schedule": "",
+            "timeout": 15
         }
     ]
 }

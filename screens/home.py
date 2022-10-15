@@ -45,20 +45,20 @@ def connect():
     return connect
 
 
-def auth(data):
-    auth = BaseScreen("Auth", "black", 1.5)
-    auth.create()
+def email(data):
+    email = BaseScreen("Email", "black", 1.5)
+    email.create()
 
-    (x, y) = auth.screen.get_rect().center
+    (x, y) = email.screen.get_rect().center
 
-    auth.add_text(
+    email.add_text(
         36,
         (x, y - 54),
         "Please input email address:",
         "white",
     )
 
-    auth.add_text(
+    email.add_text(
         36,
         (x, y),
         "",
@@ -67,16 +67,101 @@ def auth(data):
         True
     )
 
-    auth.input_config = {
+    email.input_config = {
         'size': 36,
         'pos': (x, y),
         'color': 'white',
         'bg': 'brown',
     }
 
-    auth.create_btn("Signup", 36, "brown", x - 160, y + 54, "mid")
-    auth.create_btn("Login", 36, "brown", x, y + 54, "mid")
-    auth.create_btn("Verify", 36, "brown", x + 160, y + 54, "mid")
-    msg = data['message']
+    email.create_btn("Signup", 36, "brown", x - 160, y + 54, "mid")
+    email.create_btn("Login", 36, "brown", x, y + 54, "mid")
+    email.create_btn("Verify", 36, "brown", x + 160, y + 54, "mid")
 
-    return auth
+    msg = data['message']
+    menu.add_text(
+        32, (x, y +
+             258), f'{msg}', "dodgerblue3"
+    )
+
+    return email
+
+
+def pwd(data):
+    pwd = BaseScreen("Pwd", "black", 1.5)
+    pwd.create()
+
+    (x, y) = pwd.screen.get_rect().center
+
+    pwd.add_text(
+        36,
+        (x, y - 54),
+        "Please input password:",
+        "white",
+    )
+
+    pwd.add_text(
+        36,
+        (x, y),
+        "",
+        "white",
+        'brown',
+        True
+    )
+
+    pwd.input_config = {
+        'size': 36,
+        'pos': (x, y),
+        'color': 'white',
+        'bg': 'brown',
+    }
+
+    pwd.create_btn("Submit", 36, "brown", x, y + 54, "mid")
+
+    msg = data['message']
+    menu.add_text(
+        32, (x, y +
+             258), f'{msg}', "dodgerblue3"
+    )
+
+    return pwd
+
+
+def otp(data):
+    otp = BaseScreen("Otp", "black", 1.5)
+    otp.create()
+
+    (x, y) = otp.screen.get_rect().center
+
+    otp.add_text(
+        36,
+        (x, y - 54),
+        "Please input OTP:",
+        "white",
+    )
+
+    otp.add_text(
+        36,
+        (x, y),
+        "",
+        "white",
+        'brown',
+        True
+    )
+
+    otp.input_config = {
+        'size': 36,
+        'pos': (x, y),
+        'color': 'white',
+        'bg': 'brown',
+    }
+
+    otp.create_btn("Check", 36, "brown", x, y + 54, "mid")
+    
+    msg = data['message']
+    menu.add_text(
+        32, (x, y +
+             258), f'{msg}', "dodgerblue3"
+    )
+
+    return otp

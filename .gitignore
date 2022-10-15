@@ -130,3 +130,6 @@ dmypy.json
 
 # Editor settings
 .vscode
+
+# Credentials
+secret.py

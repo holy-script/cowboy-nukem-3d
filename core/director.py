@@ -19,7 +19,9 @@ class Director:
             "logos": splash.logos,
             "banner": splash.banner,
             "connect": home.connect,
-            "auth": home.auth,
+            "email": home.email,
+            "pwd": home.pwd,
+            "otp": home.otp,
             "menu": home.menu,
         }
         self.current = None

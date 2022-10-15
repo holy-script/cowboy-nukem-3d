@@ -1,12 +1,14 @@
 from appwrite.client import Client
 from appwrite.services.functions import Functions
+from secret import *
+import json
 
 client = Client()
 
 (client
- .set_endpoint('http://20.111.63.26/v1')
- .set_project('6349a6246bff99b4f66d')
- .set_key('dff24acc21322487fb6586afff8a5bfcea278cf44a69effb6e7c76b2d8afcc7de599061d44623bae34ebdb429df3863bcf9514d1c5cbc65dcc21c3c4ca3f65f7d79f6edd4212105ae0c0c69d2bfaed6d133c3123067ccfde60645ea440d691e6351c1f50c5d3597c4be4fb8e82392c69048271d4504416b23a3af952de86decc')
+ .set_endpoint(API_ENDPOINT)
+ .set_project(PROJECT_ID)
+ .set_key(API_KEY)
  )
 
 functions = Functions(client)
@@ -20,4 +22,28 @@ inputs = {
 
 
 def ping():
-    return functions.create_execution('634a5f1de438f3bf594b')
+    return functions.create_execution(PING_ID)
+
+
+def signup():
+    payload = json.dumps({
+        'flow': 'signup',
+        'data': inputs
+    })
+    return functions.create_execution(AUTH_ID, payload)
+
+
+def login():
+    payload = json.dumps({
+        'flow': 'login',
+        'data': inputs
+    })
+    return functions.create_execution(AUTH_ID, payload)
+
+
+def otp():
+    payload = json.dumps({
+        'flow': 'verify',
+        'data': inputs
+    })
+    return functions.create_execution(AUTH_ID, payload)
