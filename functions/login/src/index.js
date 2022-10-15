@@ -28,7 +28,7 @@ module.exports = async function (req, res) {
     if (!search.documents[0].verified)
       res.json({
         signin: false,
-        msg: "Email not verified, play use the OTP sent to confirm it and then log in!",
+        msg: "Email not verified, please use the OTP sent to confirm it and then log in!",
       })
     search.documents[0].pwd == payload["pwd"]
       ? res.json({

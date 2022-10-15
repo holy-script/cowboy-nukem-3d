@@ -17,6 +17,7 @@ class Game:
         self.connected = False
         self.message = ''
         self.pinged = False
+        self.flow = ''
 
     def new_game(self):
         pass
@@ -60,7 +61,6 @@ class Game:
             if self.director.current:
                 if self.director.current.name == "Connect" and self.director.current.evts_added:
                     if not self.pinged:
-                        print("sending...")
                         try:
                             res = ping()
                             if res['response'] == 'OK':
@@ -98,14 +98,17 @@ class Game:
                     if len(inputs['email']) > 0:
                         if event.type == self.director.events["SIGNUP_CLICK"]:
                             self.director.end_screen()
+                            self.flow = 'signup'
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_SIGNUP"], 1500, 1)
                         if event.type == self.director.events["LOGIN_CLICK"]:
                             self.director.end_screen()
+                            self.flow = 'login'
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_LOGIN"], 1500, 1)
                         if event.type == self.director.events["VERIFY_CLICK"]:
                             self.director.end_screen()
+                            self.flow = 'verify'
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_VERIFY"], 1500, 1)
                         if event.type == self.director.events["FADE_IN_LOGIN"]:
@@ -113,7 +116,7 @@ class Game:
                                 'message': self.message,
                             })
                         if event.type == self.director.events["FADE_IN_SIGNUP"]:
-                            self.director.start_screen('otp', {
+                            self.director.start_screen('pwd', {
                                 'message': self.message,
                             })
                         if event.type == self.director.events["FADE_IN_VERIFY"]:
@@ -134,21 +137,44 @@ class Game:
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_SUBMIT"], 1500, 1)
                         if event.type == self.director.events["FADE_IN_SUBMIT"]:
-                            print(inputs['email'],
-                                  inputs['pwd'], inputs['otp'])
-                            try:
-                                res = login()
-                                res = res['response']
-                                res = json.loads(res)
-                                self.message = res['message']
-                                self.director.start_screen('menu', {
-                                    'message': self.message,
-                                })
-                            except:
-                                self.message = 'An error occurred while logging in, try again'
-                                self.director.start_screen('email', {
-                                    'message': self.message,
-                                })
+                            if self.flow == 'login' or self.flow == 'verify':
+                                try:
+                                    res = login()
+                                    res = res['response']
+                                    res = json.loads(res)
+                                    self.message = res['msg']
+                                    if res['signin'] == True:
+                                        self.director.start_screen('menu', {
+                                            'message': self.message,
+                                        })
+                                    else:
+                                        self.director.start_screen('email', {
+                                            'message': self.message,
+                                        })
+                                except:
+                                    self.message = 'An error occurred while logging in, try again'
+                                    self.director.start_screen('email', {
+                                        'message': self.message,
+                                    })
+                            if self.flow == 'signup':
+                                try:
+                                    res = signup()
+                                    res = res['response']
+                                    res = json.loads(res)
+                                    self.message = res['msg']
+                                    if res['create'] == True:
+                                        self.director.start_screen('otp', {
+                                            'message': self.message,
+                                        })
+                                    else:
+                                        self.director.start_screen('email', {
+                                            'message': self.message,
+                                        })
+                                except:
+                                    self.message = 'An error occurred while logging in, try again'
+                                    self.director.start_screen('email', {
+                                        'message': self.message,
+                                    })
                 if self.director.current.name == 'Otp' and self.director.current.evts_added:
                     self.director.current.taking_input = True
                     if event.type == pg.KEYDOWN:
@@ -163,19 +189,27 @@ class Game:
                             pg.time.set_timer(
                                 self.director.events["FADE_IN_CHECK"], 1500, 1)
                         if event.type == self.director.events["FADE_IN_CHECK"]:
-                            try:
-                                res = otp()
-                                res = res['response']
-                                res = json.loads(res)
-                                self.message = res['message']
-                                self.director.start_screen('pwd', {
-                                    'message': self.message,
-                                })
-                            except:
-                                self.message = 'An error occurred while verifying, try again'
-                                self.director.start_screen('email', {
-                                    'message': self.message,
-                                })
+                            if self.flow == 'verify' or self.flow == 'signup':
+                                try:
+                                    res = otp()
+                                    res = res['response']
+                                    res = json.loads(res)
+                                    self.message = res['msg']
+                                    if res['verify'] == True:
+                                        if self.flow == 'signup':
+                                            self.flow = 'login'
+                                        self.director.start_screen('pwd', {
+                                            'message': self.message,
+                                        })
+                                    else:
+                                        self.director.start_screen('email', {
+                                            'message': self.message,
+                                        })
+                                except:
+                                    self.message = 'An error occurred while verifying, try again'
+                                    self.director.start_screen('email', {
+                                        'message': self.message,
+                                    })
 
     def run(self):
         while True:

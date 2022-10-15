@@ -79,7 +79,7 @@ def email(data):
     email.create_btn("Verify", 36, "brown", x + 160, y + 54, "mid")
 
     msg = data['message']
-    menu.add_text(
+    email.add_text(
         32, (x, y +
              258), f'{msg}', "dodgerblue3"
     )
@@ -119,7 +119,7 @@ def pwd(data):
     pwd.create_btn("Submit", 36, "brown", x, y + 54, "mid")
 
     msg = data['message']
-    menu.add_text(
+    pwd.add_text(
         32, (x, y +
              258), f'{msg}', "dodgerblue3"
     )
@@ -157,9 +157,9 @@ def otp(data):
     }
 
     otp.create_btn("Check", 36, "brown", x, y + 54, "mid")
-    
+
     msg = data['message']
-    menu.add_text(
+    otp.add_text(
         32, (x, y +
              258), f'{msg}', "dodgerblue3"
     )

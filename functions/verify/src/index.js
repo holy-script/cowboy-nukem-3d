@@ -30,7 +30,7 @@ module.exports = async function (req, res) {
         verify: false,
         msg: "Email already verified, please log in!",
       })
-    if (search.documents[0].otp == payload["otp"]) {
+    if (search.documents[0].otp == parseInt(payload["otp"], 10)) {
       try {
         await database.updateDocument(
           req.variables["DATABASE_ID"],
