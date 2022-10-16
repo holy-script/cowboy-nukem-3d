@@ -5,8 +5,10 @@ from core.director import Director
 from config import *
 from server import *
 import json
-from core.map import *
-from core.player import *
+from core.map import Map
+from core.player import Player
+from core.raycasting import RayCasting
+from core.renderer import ObjectRenderer
 
 
 class Game:
@@ -26,13 +28,16 @@ class Game:
     def new_game(self):
         self.map = Map(self)
         self.player = Player(self)
+        self.object_renderer = ObjectRenderer(self)
+        self.raycasting = RayCasting(self)
 
     def update(self):
+        if self.started:
+            self.player.update()
+            self.raycasting.update()
         pg.display.flip()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"{self.clock.get_fps() :.1f}")
-        if self.started:
-            self.player.update()
 
     def draw(self):
         self.screen.fill("black")
@@ -47,8 +52,9 @@ class Game:
             for text in self.director.current.texts
         ]
         if self.started:
-            self.map.draw()
-            self.player.draw()
+            self.object_renderer.draw()
+            # self.map.draw()
+            # self.player.draw()
 
     def check_events(self):
         for event in pg.event.get():
