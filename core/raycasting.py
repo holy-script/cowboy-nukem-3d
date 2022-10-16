@@ -35,6 +35,7 @@ class RayCasting:
             self.objects_to_render.append((depth, wall_column, wall_pos))
 
     def raycast(self):
+        texture_vert, texture_hor = 1, 1
         self.ray_casting_result = []
         ox, oy = self.game.player.pos
         x_map, y_map = self.game.player.map_pos

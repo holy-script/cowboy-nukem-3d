@@ -9,6 +9,11 @@ from core.map import Map
 from core.player import Player
 from core.raycasting import RayCasting
 from core.renderer import ObjectRenderer
+from core.sprites import SpriteObject, AnimatedSprite
+from core.weapon import Weapon
+from core.handler import ObjectHandler
+from core.pathfinding import PathFinding
+from core.sound import *
 
 
 class Game:
@@ -24,17 +29,29 @@ class Game:
         self.flow = ''
         self.delta_time = 1
         self.started = False
+        self.sound = Sound(self)
+        pg.mixer.music.play(-1)
 
     def new_game(self):
+        pg.mouse.set_visible(False)
         self.map = Map(self)
         self.player = Player(self)
         self.object_renderer = ObjectRenderer(self)
         self.raycasting = RayCasting(self)
+        self.static_sprite = SpriteObject(self)
+        self.animated_sprite = AnimatedSprite(self)
+        self.object_handler = ObjectHandler(self)
+        self.weapon = Weapon(self)
+        self.pathfinding = PathFinding(self)
 
     def update(self):
         if self.started:
             self.player.update()
             self.raycasting.update()
+            self.static_sprite.update()
+            self.animated_sprite.update()
+            self.object_handler.update()
+            self.weapon.update()
         pg.display.flip()
         self.delta_time = self.clock.tick(FPS)
         pg.display.set_caption(f"{self.clock.get_fps() :.1f}")
@@ -53,11 +70,12 @@ class Game:
         ]
         if self.started:
             self.object_renderer.draw()
-            # self.map.draw()
-            # self.player.draw()
+            self.weapon.draw()
 
     def check_events(self):
         for event in pg.event.get():
+            if self.started:
+                self.player.single_fire_event(event)
             if event.type == pg.QUIT or (
                 event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE
             ):
