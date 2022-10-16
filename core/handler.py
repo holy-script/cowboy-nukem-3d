@@ -23,7 +23,13 @@ class ObjectHandler:
             self.game.object_renderer.win()
             pg.display.flip()
             pg.time.delay(1500)
-            self.game.new_game()
+            self.game.director.start_screen(
+                'menu', {
+                    'message': "You won! If you're online, do checkout the leaderboard!",
+                })
+            self.game.started = False
+            self.game.director.to_blit = True
+            pg.mouse.set_visible(True)
 
     def update(self):
         self.npc_positions = {

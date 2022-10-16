@@ -35,6 +35,8 @@ class ObjectRenderer:
 
     def win(self):
         self.screen.blit(self.win_image, (0, 0))
+        self.game.score = pg.time.get_ticks() - self.game.score
+        print(self.game.score)
 
     def game_over(self):
         self.screen.blit(self.game_over_image, (0, 0))

@@ -18,6 +18,7 @@ inputs = {
     'pwd': '',
     'otp': '',
     'phone': '',
+    'score': '',
 }
 
 

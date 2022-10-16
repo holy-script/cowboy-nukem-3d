@@ -8,13 +8,18 @@ def menu(data):
 
     (x, y) = menu.screen.get_rect().center
 
-    menu.create_btn("Start!", 36, "brown", x, y - 54, "standard")
-    menu.create_btn("Options", 36, "brown", x, y + 18, "standard")
-    menu.create_btn("Credits", 36, "brown", x, y + 90, "standard")
-    menu.create_btn("Exit", 36, "brown", x, y + 162, "standard")
+    menu.add_text(
+        40,
+        (x, y - 220),
+        "COWBOY NUKEM 3D",
+        "black",
+    )
+    menu.create_btn("Start!", 36, "brown", x, y - 100, "standard")
+    menu.create_btn("Leaderboard", 36, "brown", x, y, "standard")
+    menu.create_btn("Exit", 36, "brown", x, y + 100, "standard")
     menu.add_text(
         32,
-        (x, y + 226),
+        (x, y - 162),
         "A pseudo-3D FPS with cowboys!",
         "dodgerblue3",
     )

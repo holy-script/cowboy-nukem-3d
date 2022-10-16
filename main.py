@@ -30,6 +30,7 @@ class Game:
         self.delta_time = 1
         self.started = False
         self.sound = Sound(self)
+        self.score = 0
         pg.mixer.music.play(-1)
 
     def new_game(self):
@@ -43,6 +44,7 @@ class Game:
         self.object_handler = ObjectHandler(self)
         self.weapon = Weapon(self)
         self.pathfinding = PathFinding(self)
+        self.score = pg.time.get_ticks()
 
     def update(self):
         if self.started:
@@ -54,7 +56,7 @@ class Game:
             self.weapon.update()
         pg.display.flip()
         self.delta_time = self.clock.tick(FPS)
-        pg.display.set_caption(f"{self.clock.get_fps() :.1f}")
+        pg.display.set_caption(f"{self.clock.get_fps() :.1f} Cowboy Nukem 3D")
 
     def draw(self):
         self.screen.fill("black")
@@ -256,6 +258,19 @@ class Game:
                             self.director.events["FADE_IN_START!"], 1500, 1)
                     if event.type == self.director.events["FADE_IN_START!"]:
                         self.director.start_screen('play')
+                    if event.type == self.director.events["EXIT_CLICK"]:
+                        self.director.end_screen()
+                        pg.time.set_timer(
+                            self.director.events["FADE_IN_EXIT"], 1500, 1)
+                    if event.type == self.director.events["FADE_IN_EXIT"]:
+                        pg.quit()
+                        sys.exit()
+                    if event.type == self.director.events["LEADERBOARD_CLICK"]:
+                        self.director.end_screen()
+                        pg.time.set_timer(
+                            self.director.events["FADE_IN_LEADERBOARD"], 1500, 1)
+                    if event.type == self.director.events["FADE_IN_LEADERBOARD"]:
+                        self.director.start_screen('leaderboard')
                 if self.director.current.name == 'Play':
                     if not self.started:
                         self.director.to_blit = False

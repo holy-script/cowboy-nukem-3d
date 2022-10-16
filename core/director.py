@@ -25,6 +25,7 @@ class Director:
             "otp": home.otp,
             "menu": home.menu,
             "play": game.play,
+            "leaderboard": game.leaderboard,
         }
         self.current = None
         self.to_blit = True

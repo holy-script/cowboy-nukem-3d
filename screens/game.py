@@ -7,3 +7,10 @@ def play():
     play.create()
 
     return play
+
+
+def leaderboard():
+    lead = BaseScreen("Leaderboard", "black", 1.5)
+    lead.create()
+
+    return lead
